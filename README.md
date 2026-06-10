@@ -20,19 +20,6 @@ Built as a personal study reference. No backend, no API keys, no dependencies be
 
 ---
 
-## Tech stack
-
-| What | Details |
-|---|---|
-| Framework | React 18+ |
-| Dependencies | `react`, `react-dom` only — no third-party libraries |
-| Hooks used | `useState`, `useEffect` |
-| Styling | Inline styles — no CSS framework, no CSS files |
-| Chart | Pure SVG rendered in JSX — no chart library |
-| File count | 1 (`VedicAstrologyGuide.jsx`) |
-
----
-
 ## Customising content
 
 All content is plain JavaScript constants at the top of `VedicAstrologyGuide.jsx`. No build step, no CMS.
