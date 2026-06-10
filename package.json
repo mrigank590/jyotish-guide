@@ -2,7 +2,7 @@
   "name": "jyotish-guide",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://mrigank590.github.io/the-force-index",
+  "homepage": "https://mrigank590.github.io/jyotish-guide",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
