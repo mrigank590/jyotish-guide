@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/jyotish-guide/static/js/main.889bdcb7.js",
+    "main.js": "/jyotish-guide/static/js/main.c623531a.js",
     "index.html": "/jyotish-guide/index.html",
-    "main.889bdcb7.js.map": "/jyotish-guide/static/js/main.889bdcb7.js.map"
+    "main.c623531a.js.map": "/jyotish-guide/static/js/main.c623531a.js.map"
   },
   "entrypoints": [
-    "static/js/main.889bdcb7.js"
+    "static/js/main.c623531a.js"
   ]
 }
