@@ -412,7 +412,14 @@ function ResourceCard({ name, badge, sub, pros, cons, rating, url }) {
         </div>
         {rating && <span style={{ color:C.accent, letterSpacing:1, fontSize:13 }}>{"★".repeat(rating)}{"☆".repeat(5-rating)}</span>}
       </div>
-      {url && <div style={{ fontSize:11, color:C.muted, fontFamily:"sans-serif", marginBottom:6 }}>↗ {url}</div>}
+      {url && (
+        <div style={{ fontSize:11, fontFamily:"sans-serif", marginBottom:6 }}>
+          <a href={url.startsWith("http") ? url : `https://${url}`} target="_blank" rel="noopener noreferrer"
+            style={{ color:C.accent, textDecoration:"none" }}>
+            ↗ {url.replace(/^https?:\/\//, "")}
+          </a>
+        </div>
+      )}
       {(pros||cons) && (
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:6 }}>
           {pros && <div>
@@ -444,6 +451,16 @@ function WeekRow({ label, text }) {
       <div style={{ flex:1, background:C.card, border:`1px solid ${C.border}`, borderRadius:3,
         padding:"8px 12px", fontSize:12, color:C.ink, fontFamily:"sans-serif", lineHeight:1.6 }}>{text}</div>
     </div>
+  );
+}
+
+function Lnk({ href, children }) {
+  const { C } = useTheme();
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer"
+      style={{ color:C.accent, textDecoration:"none", fontWeight:600 }}>
+      {children} ↗
+    </a>
   );
 }
 
@@ -836,25 +853,34 @@ export default function App() {
           <Sec id="youtube" title="YouTube Channels">
             <H3>Tier 1 — Best for beginners</H3>
             <ResourceCard name="Ryan Kurczak (Asheville Vedic Astrology)" rating={5}
+              url="https://www.youtube.com/channel/UCEMhv-bDzRVrrB6a5HkaZHg"
               pros={["52 free videos, 15+ hours — a complete structured course","Methodical, based on his book; calm teaching style, no hype"]}
               cons={["Videos are older, not frequently updated","Paid courses on his site are where the real depth is"]} />
             <ResourceCard name="KRSchannel (Kapiel Raaj)" rating={3}
+              url="https://www.youtube.com/channel/UCAhSM44HoLZQrjGFttqvI5A"
               pros={["591K+ subscribers; huge library covering every planet-sign-house combination","Accessible, casual, great for quick lookups"]}
               cons={["Widely criticised for oversimplification and inaccuracies vs classical texts","Mixes Western and Vedic ideas without flagging it","Treat as a starting point only — verify against classical sources"]} />
             <ResourceCard name="Penny Farrow (Good Stars Jyotish)" rating={4}
+              url="https://www.youtube.com/@GoodStarsJyotish"
               pros={["Thoughtful, traditional, spiritually grounded","Excellent for Nakshatras, mythology, and cultural context"]}
               cons={["Smaller library than KRS"]} />
             <H3>Tier 2 — Intermediate & specialty</H3>
             {[
-              { name:"Komilla Sutton (BAVA)", rating:5, desc:"One of the most respected Western Jyotish teachers. Excellent for Nakshatras and structured learning. Much free content on YouTube." },
-              { name:"PVR Narasimha Rao", rating:5, desc:"Very technical, academically rigorous. Creator of the free JHora software. Best for those who want the classical textual basis." },
-              { name:"Sanjay Rath", rating:4, desc:"One of the most respected living Jyotishis globally. Deep classical knowledge. Content assumes prior knowledge — not for beginners." },
-              { name:"Hindi-language channels", rating:4, desc:"Dozens of excellent free channels in Hindi. Search: 'Kundli parhna seekho' or 'jyotish ke mool siddhant'." },
+              { name:"Komilla Sutton (BAVA)", rating:5, url:"https://www.youtube.com/channel/UCztthZzRel9X1iRFm51nTgg", desc:"One of the most respected Western Jyotish teachers. Excellent for Nakshatras and structured learning. Much free content on YouTube." },
+              { name:"PVR Narasimha Rao", rating:5, url:"https://www.vedicastrologer.org", desc:"Very technical, academically rigorous. Creator of the free JHora software. Best for those who want the classical textual basis." },
+              { name:"Sanjay Rath", rating:4, url:"https://www.srigaruda.com", desc:"One of the most respected living Jyotishis globally. Deep classical knowledge. Content assumes prior knowledge — not for beginners." },
+              { name:"Hindi-language channels", rating:4, url:"https://www.youtube.com/results?search_query=kundli+parhna+seekho", desc:"Dozens of excellent free channels in Hindi. Search: 'Kundli parhna seekho' or 'jyotish ke mool siddhant'." },
             ].map(ch => (
               <div key={ch.name} style={{ background:C.card, border:`1px solid ${C.border}`,
                 borderRadius:4, padding:"10px 14px", marginBottom:10 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-                  <span style={{ fontWeight:700, fontSize:13, color:C.ink }}>{ch.name}</span>
+                  <div>
+                    <span style={{ fontWeight:700, fontSize:13, color:C.ink }}>{ch.name}</span>
+                    {ch.url && (
+                      <a href={ch.url} target="_blank" rel="noopener noreferrer"
+                        style={{ marginLeft:8, fontSize:11, color:C.accent, textDecoration:"none" }}>↗</a>
+                    )}
+                  </div>
                   <span style={{ color:C.accent, letterSpacing:1 }}>{"★".repeat(ch.rating)}{"☆".repeat(5-ch.rating)}</span>
                 </div>
                 <p style={{ margin:0, fontSize:12, color:C.mid, lineHeight:1.6 }}>{ch.desc}</p>
@@ -868,44 +894,43 @@ export default function App() {
             <DataTable
               headers={["Site","What it does well"]}
               rows={[
-                ["AstroSage.com","Most popular Indian site; generates Kundli, all vargas, Dasha table; Hindi & English"],
-                ["Astromitra.com","All 16 divisional charts free; uses Swiss Ephemeris (NASA-grade accuracy)"],
-                ["ProKerala.com","Clean Vimshottari Dasha calculator with good explanations"],
-                ["Mahadasha.com","Focused specifically on Dasha and Antardasha calculations"],
-                ["AppliedJyotish.com","Detailed Dasha calculator with Pratyantar Dasha levels"],
-                ["Nakshamastro.com","Free D9 and D10 generator with Vargottama detection"],
-                ["VedicAstrologer.org","Home of JHora software; free articles by PVR Narasimha Rao"],
+                [<Lnk href="https://www.astrosage.com/kundli/">AstroSage.com</Lnk>,"Most popular Indian site; generates Kundli, all vargas, Dasha table; Hindi & English"],
+                [<Lnk href="https://www.astromitra.com/online_horoscope/free-birth-chart.php">Astromitra.com</Lnk>,"All 16 divisional charts free; uses Swiss Ephemeris (NASA-grade accuracy)"],
+                [<Lnk href="https://www.prokerala.com/astrology/vimshottari-dasha.php">ProKerala.com</Lnk>,"Clean Vimshottari Dasha calculator with good explanations"],
+                [<Lnk href="https://appliedjyotish.com/vimshottari-dasha-calculator">AppliedJyotish.com</Lnk>,"Detailed Dasha calculator with Pratyantar Dasha levels"],
+                [<Lnk href="https://www.prokerala.com/astrology/divisional-charts.php">ProKerala Vargas</Lnk>,"Free all 16 divisional charts calculator"],
+                [<Lnk href="https://www.vedicastrologer.org">VedicAstrologer.org</Lnk>,"Home of JHora software; free articles by PVR Narasimha Rao"],
               ]}
             />
             <H3>Learning articles</H3>
             <DataTable
               headers={["Site","Best for"]}
               rows={[
-                ["MyKundliAI.com/blog","Clear beginner roadmaps and concept explanations"],
-                ["Vedaayan.com","Mahadasha/Antardasha explanations with worked examples"],
-                ["DashaClub.com","Vedic vs Western breakdowns, sign calculators"],
-                ["AstroJagriti.substack.com","Traditional learning philosophy, book lists, free ebook links"],
+                [<Lnk href="https://www.astrosage.com/learn-astrology/">AstroSage Learn</Lnk>,"Beginner concept explanations; Hindi and English"],
+                [<Lnk href="https://appliedjyotish.com/vimshottari-dasha-calculator">AppliedJyotish.com</Lnk>,"Mahadasha/Antardasha explanations with worked examples"],
+                [<Lnk href="https://www.vedicastrologer.org/articles">VedicAstrologer Articles</Lnk>,"Free research articles by PVR Narasimha Rao"],
+                [<Lnk href="https://www.astromitra.com/free-astrology-services.php">Astromitra Learn</Lnk>,"Traditional learning philosophy and free Vedic tools"],
               ]}
             />
             <Card title="Free e-books (legitimate)" items={[
-              "PVR Narasimha Rao's Free Vedic Astrology E-book — vedicastrologer.org — best free modern text",
-              "BV Raman's 'Astrology for Beginners' — archive.org — classic Indian foundational text",
-              "Brihat Parashara Hora Shastra — archive.org — free English translation of the root classical text",
+              <span>PVR Narasimha Rao's Free Vedic Astrology Lessons — <Lnk href="https://www.vedicastrologer.org/classes/book1-for-CD.pdf">vedicastrologer.org ↗</Lnk> — 45-lesson PDF, best free structured text</span>,
+              <span>BV Raman's 'Astrology for Beginners' — <Lnk href="https://archive.org/details/AstrologyForBeginners_201705">archive.org ↗</Lnk> — classic Indian foundational text</span>,
+              <span>Brihat Parashara Hora Shastra — <Lnk href="https://archive.org/details/BPHSEnglish">archive.org ↗</Lnk> — free English translation of the root classical text</span>,
             ]} />
           </Sec>
 
           {/* ── Software ─────────────────────────────────────────────── */}
           <Sec id="software" title="Free Software">
-            <ResourceCard name="Jagannatha Hora (JHora)" badge="Free" sub="Windows" url="vedicastrologer.org" rating={5}
+            <ResourceCard name="Jagannatha Hora (JHora)" badge="Free" sub="Windows" url="https://www.vedicastrologer.org/jh/" rating={5}
               pros={["Gold standard of free Vedic astrology software — professionals use this","Generates all 16 divisional charts, all dasha systems, Ashtakavarga, transits","Created by PVR Narasimha Rao"]}
               cons={["Windows only (runs on Mac via Parallels or Wine)","Interface looks dated","Steep initial learning curve"]} />
-            <ResourceCard name="Maitreya's Dream" badge="Free" sub="Linux / Mac / Windows" url="saravali.sourceforge.net" rating={3}
+            <ResourceCard name="Maitreya's Dream" badge="Free" sub="Linux / Mac / Windows" url="https://github.com/robinrodricks/Maitreya9" rating={3}
               pros={["Open-source; cross-platform","Supports Vedic, Western, and KP systems"]}
               cons={["Less feature-rich than JHora for Vedic-specific work"]} />
-            <ResourceCard name="Drik Panchang" badge="Free" sub="Browser — no download" url="drikpanchang.com" rating={4}
+            <ResourceCard name="Drik Panchang" badge="Free" sub="Browser — no download" url="https://www.drikpanchang.com" rating={4}
               pros={["No download needed; excellent for Panchang (daily almanac) and Muhurta"]}
               cons={["Not designed for deep chart analysis"]} />
-            <ResourceCard name="AstroSage Kundli" badge="Free" sub="Android / iOS" url="astrosage.com" rating={3}
+            <ResourceCard name="AstroSage Kundli" badge="Free" sub="Android / iOS" url="https://www.astrosage.com/kundli/" rating={3}
               pros={["Good free chart generator on the go; all vargas and Dasha table"]}
               cons={["Ad-heavy; aggressively pushes paid consultations"]} />
           </Sec>
@@ -914,40 +939,45 @@ export default function App() {
           <Sec id="books" title="Books">
             <H3>Free / freely available</H3>
             {[
-              { title:"Astrology for Beginners", author:"B.V. Raman", where:"Free at archive.org", badge:"Free", rating:5, note:"The classic Indian starting point. Clear, structured, with examples. Raman is considered one of the 20th century's greatest Jyotishis." },
-              { title:"Fundamentals of Vedic Astrology", author:"Bepin Behari", where:"Free PDF", badge:"Free", rating:4, note:"Combines spiritual and technical. Good for understanding why the rules exist." },
-              { title:"PVR Narasimha Rao's Free E-book", author:"PVR Narasimha Rao", where:"vedicastrologer.org", badge:"Free", rating:5, note:"Concise, modern, technically careful. Best free text for learning software-aided Jyotish." },
-              { title:"Brihat Parashara Hora Shastra", author:"Attributed to Sage Parashara", where:"archive.org", badge:"Free", rating:5, note:"The root classical text. Not beginner-friendly but invaluable as a reference." },
-            ].map(b => <ResourceCard key={b.title} name={b.title} badge={b.badge} sub={`${b.author} · ${b.where}`} rating={b.rating} pros={[b.note]} />)}
+              { title:"Astrology for Beginners", author:"B.V. Raman", where:"Free at archive.org", badge:"Free", rating:5, url:"https://archive.org/details/AstrologyForBeginners_201705", note:"The classic Indian starting point. Clear, structured, with examples. Raman is considered one of the 20th century's greatest Jyotishis." },
+              { title:"Fundamentals of Vedic Astrology", author:"Bepin Behari", where:"Free PDF", badge:"Free", rating:4, url:"https://archive.org/search?query=bepin+behari+fundamentals+vedic+astrology", note:"Combines spiritual and technical. Good for understanding why the rules exist." },
+              { title:"PVR Narasimha Rao's Free Lessons (Vol. 1)", author:"PVR Narasimha Rao", where:"vedicastrologer.org", badge:"Free", rating:5, url:"https://www.vedicastrologer.org/classes/book1-for-CD.pdf", note:"Concise, modern, technically careful. Best free text for learning software-aided Jyotish." },
+              { title:"Brihat Parashara Hora Shastra", author:"Attributed to Sage Parashara", where:"archive.org", badge:"Free", rating:5, url:"https://archive.org/details/BPHSEnglish", note:"The root classical text. Not beginner-friendly but invaluable as a reference." },
+            ].map(b => <ResourceCard key={b.title} name={b.title} badge={b.badge} sub={`${b.author} · ${b.where}`} rating={b.rating} url={b.url} pros={[b.note]} />)}
 
             <H3>Paid books worth buying</H3>
             {[
-              { title:"The Art and Science of Vedic Astrology (Vol. 1 & 2)", author:"Ryan Kurczak & Richard Fish", price:"~₹1,500–2,000 / $20–25", rating:5, note:"The most recommended beginner-to-intermediate textbook. Structured like a course. Goodreads: 4.27/5." },
-              { title:"The Essentials of Vedic Astrology", author:"Komilla Sutton", price:"~₹1,200–1,800", rating:5, note:"Excellent for signs, houses, planets, nakshatras. Goodreads: 4.31/5. Well-loved by both Indian and Western students." },
-              { title:"Light on Life", author:"Hart de Fouw & Robert Svoboda", price:"~₹2,000–3,000", rating:5, note:"The most comprehensive English-language Jyotish textbook. Dense but thorough." },
-              { title:"Astrology of the Seers", author:"David Frawley", price:"~₹1,000–1,500", rating:4, note:"A well-respected bridge between Vedic philosophy and astrology; very readable." },
-              { title:"Path of Light (Vol. 1 & 2)", author:"James Kelleher", price:"~₹2,500–3,500", rating:4, note:"Deep treatment of Nakshatras with traditional artwork. Praised by David Frawley." },
-              { title:"Crux of Vedic Astrology: Timing of Events", author:"Sanjay Rath", price:"~₹2,000–3,000", rating:5, note:"Best book in English on dasha systems and event timing. For intermediate+ students only." },
-              { title:"Learn Think and Predict Through Astrology", author:"Prof. Arora", price:"~₹400–600", rating:3, note:"Budget-friendly, practical Indian perspective. 60% five-star reviews on Goodreads." },
-            ].map(b => <ResourceCard key={b.title} name={b.title} badge="Paid" sub={`${b.author} · ${b.price}`} rating={b.rating} pros={[b.note]} />)}
+              { title:"The Art and Science of Vedic Astrology (Vol. 1 & 2)", author:"Ryan Kurczak & Richard Fish", price:"~₹1,500–2,000 / $20–25", rating:5, url:"https://www.ashevillevedicastrology.com", note:"The most recommended beginner-to-intermediate textbook. Structured like a course. Goodreads: 4.27/5." },
+              { title:"The Essentials of Vedic Astrology", author:"Komilla Sutton", price:"~₹1,200–1,800", rating:5, url:"https://www.komillasutton.com", note:"Excellent for signs, houses, planets, nakshatras. Goodreads: 4.31/5. Well-loved by both Indian and Western students." },
+              { title:"Light on Life", author:"Hart de Fouw & Robert Svoboda", price:"~₹2,000–3,000", rating:5, url:"https://www.amazon.in/s?k=light+on+life+de+fouw+svoboda", note:"The most comprehensive English-language Jyotish textbook. Dense but thorough." },
+              { title:"Astrology of the Seers", author:"David Frawley", price:"~₹1,000–1,500", rating:4, url:"https://www.amazon.in/s?k=astrology+seers+david+frawley", note:"A well-respected bridge between Vedic philosophy and astrology; very readable." },
+              { title:"Path of Light (Vol. 1 & 2)", author:"James Kelleher", price:"~₹2,500–3,500", rating:4, url:"https://www.amazon.in/s?k=path+of+light+james+kelleher+astrology", note:"Deep treatment of Nakshatras with traditional artwork. Praised by David Frawley." },
+              { title:"Crux of Vedic Astrology: Timing of Events", author:"Sanjay Rath", price:"~₹2,000–3,000", rating:5, url:"https://www.srigaruda.com/books", note:"Best book in English on dasha systems and event timing. For intermediate+ students only." },
+              { title:"Learn Think and Predict Through Astrology", author:"Prof. Arora", price:"~₹400–600", rating:3, url:"https://www.amazon.in/s?k=learn+think+predict+astrology+arora", note:"Budget-friendly, practical Indian perspective. 60% five-star reviews on Goodreads." },
+            ].map(b => <ResourceCard key={b.title} name={b.title} badge="Paid" sub={`${b.author} · ${b.price}`} rating={b.rating} url={b.url} pros={[b.note]} />)}
           </Sec>
 
           {/* ── Paid Courses ─────────────────────────────────────────── */}
           <Sec id="courses" title="Paid Courses Worth Considering">
             <P>Do free resources first. These are for when you've completed Phase 1 and want structured progression.</P>
             {[
-              { name:"Asheville Vedic Astrology — Ryan Kurczak", url:"ashevillevedicastrology.com", price:"~$42 per topic course", note:"Audio/video download courses. Navamsha + Dashamsha course is particularly good. Best Western-produced paid content available." },
-              { name:"Komilla Sutton's School", url:"komillasutton.com", price:"Expensive — certificate programs", note:"Certificate programs. Thorough for those wanting a formal credential." },
-              { name:"Sanjay Rath's Courses (SJC)", url:"sjc.org.in", price:"Varies", note:"For advanced students only. Highly technical and traditional. Not beginner-appropriate." },
-              { name:"Udemy — Kundli Mastery (Astro Arun Pandit)", url:"udemy.com", price:"~₹500–1,500 on sale", note:"Covers foundations through Mahadasha/Antardasha with case studies. Always check recent reviews before buying." },
-              { name:"BAVA (Bharat Astro Veda Academy)", url:"bharatastroveda.com", price:"Varies", note:"Live weekly classes. Covers Nakshatras, Dasha systems, D9/D10. 12 months access to recordings. Requires Phase 1 completion." },
+              { name:"Asheville Vedic Astrology — Ryan Kurczak", url:"https://www.ashevillevedicastrology.com", price:"~$42 per topic course", note:"Audio/video download courses. Navamsha + Dashamsha course is particularly good. Best Western-produced paid content available." },
+              { name:"Komilla Sutton's School", url:"https://www.komillasutton.com", price:"Expensive — certificate programs", note:"Certificate programs. Thorough for those wanting a formal credential." },
+              { name:"Sanjay Rath's Courses (SJC)", url:"https://www.srigaruda.com", price:"Varies", note:"For advanced students only. Highly technical and traditional. Not beginner-appropriate." },
+              { name:"Udemy — Kundli Mastery (Astro Arun Pandit)", url:"https://www.udemy.com/courses/search/?q=kundli+vedic+astrology", price:"~₹500–1,500 on sale", note:"Covers foundations through Mahadasha/Antardasha with case studies. Always check recent reviews before buying." },
+              { name:"BAVA (Bharat Astro Veda Academy)", url:"https://www.bharatastroveda.com", price:"Varies", note:"Live weekly classes. Covers Nakshatras, Dasha systems, D9/D10. 12 months access to recordings. Requires Phase 1 completion." },
             ].map(c => (
               <div key={c.name} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:4, padding:"10px 14px", marginBottom:10 }}>
-                <div style={{ fontWeight:700, fontSize:13, color:C.ink }}>{c.name}</div>
+                <div style={{ fontWeight:700, fontSize:13, color:C.ink }}>
+                  <a href={c.url} target="_blank" rel="noopener noreferrer"
+                    style={{ color:C.ink, textDecoration:"none" }}>{c.name}</a>
+                  <a href={c.url} target="_blank" rel="noopener noreferrer"
+                    style={{ marginLeft:6, color:C.accent, textDecoration:"none", fontSize:12 }}>↗</a>
+                </div>
                 <div style={{ fontSize:11, color:C.muted, margin:"2px 0 5px" }}>
                   <span style={{ marginRight:8, padding:"2px 7px", borderRadius:10, fontSize:10, fontWeight:700,
                     background:C.paidBg, color:C.paidTxt, border:`1px solid ${C.paidBd}` }}>Paid</span>
-                  {c.url} · {c.price}
+                  {c.price}
                 </div>
                 <p style={{ margin:0, fontSize:12, color:C.mid, lineHeight:1.6 }}>{c.note}</p>
               </div>
@@ -957,14 +987,14 @@ export default function App() {
           {/* ── Communities ──────────────────────────────────────────── */}
           <Sec id="community" title="Communities to Join">
             <GridCards items={[
-              { title:"r/vedicastrology (Reddit)",           desc:"Active community; good for chart questions, book recommendations, community-vetted resource threads." },
-              { title:"r/astrology (Reddit)",                desc:"Larger but mostly Western. Useful for comparison and vocabulary overlap." },
-              { title:"Vedic Astrology Students (Facebook)",  desc:"Large, active group for beginners and intermediate students." },
-              { title:"Jyotish — Vedic Astrology (Facebook)", desc:"More classical-focused discussions. Good for intermediate learners." },
-              { title:"LightOnVedicAstrology.com",           desc:"Older phpBB forum but a gold mine of serious discussion. Well-maintained book recommendation thread." },
-              { title:"AstroSage Forums",                    desc:"Large Indian community. Hindi and English discussions." },
-              { title:"Good Stars Jyotish (Substack)",       desc:"By Michelle R. Dean. Traditional, thoughtful, free tier available." },
-              { title:"Jyotiṣa by Pt. Katti Narahari",      desc:"1,000+ subscribers. Traditional approach. Free tier available." },
+              { title:<Lnk href="https://www.reddit.com/r/vedicastrology/">r/vedicastrology (Reddit)</Lnk>,           desc:"Active community; good for chart questions, book recommendations, community-vetted resource threads." },
+              { title:<Lnk href="https://www.reddit.com/r/astrology/">r/astrology (Reddit)</Lnk>,                    desc:"Larger but mostly Western. Useful for comparison and vocabulary overlap." },
+              { title:<Lnk href="https://www.facebook.com/groups/vedicastrologystudents">Vedic Astrology Students (Facebook)</Lnk>,  desc:"Large, active group for beginners and intermediate students." },
+              { title:"Jyotish — Vedic Astrology (Facebook)",            desc:"More classical-focused discussions. Good for intermediate learners. Search on Facebook." },
+              { title:<Lnk href="https://www.vedicastrologer.org">VedicAstrologer.org (Forum)</Lnk>,                 desc:"PVR Narasimha Rao's site — free articles, software downloads, and discussion resources." },
+              { title:<Lnk href="https://www.astrosage.com/community/">AstroSage Community</Lnk>,                    desc:"Large Indian community. Hindi and English discussions." },
+              { title:<Lnk href="https://www.youtube.com/channel/UCztthZzRel9X1iRFm51nTgg">Good Stars Jyotish (Komilla Sutton)</Lnk>,  desc:"Excellent YouTube and web presence. Traditional, thoughtful, free content." },
+              { title:<Lnk href="https://www.prokerala.com/astrology/">ProKerala Astrology</Lnk>,                    desc:"Good reference site for Panchang, calculators, and learning articles." },
             ]} />
           </Sec>
 
